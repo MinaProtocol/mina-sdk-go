@@ -224,12 +224,13 @@ func (c *Client) GetNetworkID() (string, error) {
 // GetAccount returns account data for a public key.
 // Pass an empty tokenID to use the default MINA token.
 func (c *Client) GetAccount(publicKey, tokenID string) (*AccountData, error) {
-	vars := map[string]any{"publicKey": publicKey}
+	var data json.RawMessage
+	var err error
 	if tokenID != "" {
-		vars["token"] = tokenID
+		data, err = c.request(queryGetAccountWithToken, map[string]any{"publicKey": publicKey, "token": tokenID}, "get_account")
+	} else {
+		data, err = c.request(queryGetAccount, map[string]any{"publicKey": publicKey}, "get_account")
 	}
-
-	data, err := c.request(queryGetAccount, vars, "get_account")
 	if err != nil {
 		return nil, err
 	}
@@ -371,12 +372,13 @@ func (c *Client) GetPeers() ([]PeerInfo, error) {
 // GetPooledUserCommands returns pending user commands from the transaction pool.
 // Pass an empty publicKey to get all pending commands.
 func (c *Client) GetPooledUserCommands(publicKey string) ([]PooledUserCommand, error) {
-	var vars map[string]any
+	var data json.RawMessage
+	var err error
 	if publicKey != "" {
-		vars = map[string]any{"publicKey": publicKey}
+		data, err = c.request(queryPooledUserCommands, map[string]any{"publicKey": publicKey}, "get_pooled_user_commands")
+	} else {
+		data, err = c.request(queryPooledUserCommandsAll, nil, "get_pooled_user_commands")
 	}
-
-	data, err := c.request(queryPooledUserCommands, vars, "get_pooled_user_commands")
 	if err != nil {
 		return nil, err
 	}

@@ -33,7 +33,23 @@ query {
 `
 
 const queryGetAccount = `
-query ($publicKey: PublicKey!, $token: UInt64) {
+query ($publicKey: PublicKey!) {
+    account(publicKey: $publicKey) {
+        publicKey
+        nonce
+        delegate
+        tokenId
+        balance {
+            total
+            liquid
+            locked
+        }
+    }
+}
+`
+
+const queryGetAccountWithToken = `
+query ($publicKey: PublicKey!, $token: UInt64!) {
     account(publicKey: $publicKey, token: $token) {
         publicKey
         nonce
@@ -78,8 +94,23 @@ query {
 `
 
 const queryPooledUserCommands = `
-query ($publicKey: PublicKey) {
+query ($publicKey: PublicKey!) {
     pooledUserCommands(publicKey: $publicKey) {
+        id
+        hash
+        kind
+        nonce
+        amount
+        fee
+        from
+        to
+    }
+}
+`
+
+const queryPooledUserCommandsAll = `
+query {
+    pooledUserCommands {
         id
         hash
         kind

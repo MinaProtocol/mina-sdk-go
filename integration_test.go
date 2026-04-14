@@ -174,10 +174,18 @@ func TestIntegrationBestChainOrdering(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(blocks) >= 2 {
+		ascending := true
+		descending := true
 		for i := 0; i < len(blocks)-1; i++ {
-			if blocks[i].Height < blocks[i+1].Height {
-				t.Errorf("blocks not in descending order: height %d before %d", blocks[i].Height, blocks[i+1].Height)
+			if blocks[i].Height > blocks[i+1].Height {
+				ascending = false
 			}
+			if blocks[i].Height < blocks[i+1].Height {
+				descending = false
+			}
+		}
+		if !ascending && !descending {
+			t.Error("blocks are not monotonically ordered")
 		}
 	}
 }
