@@ -239,8 +239,8 @@ func (c *Client) GetAccount(publicKey, tokenID string) (*AccountData, error) {
 		Account *struct {
 			PublicKey string      `json:"publicKey"`
 			Nonce     json.Number `json:"nonce"`
-			Delegate  string `json:"delegate"`
-			TokenID   string `json:"tokenId"`
+			Delegate  string      `json:"delegate"`
+			TokenID   string      `json:"tokenId"`
 			Balance   struct {
 				Total  string  `json:"total"`
 				Liquid *string `json:"liquid"`
