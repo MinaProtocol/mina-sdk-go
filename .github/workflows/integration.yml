@@ -10,7 +10,7 @@ on:
 jobs:
   integration:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     services:
       mina:
@@ -44,10 +44,26 @@ jobs:
       - name: Acquire test accounts
         id: accounts
         run: |
-          SENDER=$(curl -s http://127.0.0.1:8181/acquire-account?unlockAccount=true)
-          RECEIVER=$(curl -s http://127.0.0.1:8181/acquire-account)
-          SENDER_PK=$(echo "$SENDER" | jq -r '.pk')
-          RECEIVER_PK=$(echo "$RECEIVER" | jq -r '.pk')
+          acquire_account() {
+            local url="$1" label="$2"
+            for i in $(seq 1 60); do
+              RESP=$(curl -s "$url" 2>&1 || echo "")
+              if [ -n "$RESP" ]; then
+                PK=$(echo "$RESP" | jq -r '.pk // empty' 2>/dev/null)
+                if [ -n "$PK" ]; then
+                  echo "$PK"
+                  return 0
+                fi
+              fi
+              echo "Attempt $i/60: $label not ready (response: $RESP)" >&2
+              sleep 5
+            done
+            echo "Failed to acquire $label after 60 attempts" >&2
+            return 1
+          }
+
+          SENDER_PK=$(acquire_account "http://127.0.0.1:8181/acquire-account?unlockAccount=true" "sender")
+          RECEIVER_PK=$(acquire_account "http://127.0.0.1:8181/acquire-account" "receiver")
           echo "sender_pk=$SENDER_PK" >> "$GITHUB_OUTPUT"
           echo "receiver_pk=$RECEIVER_PK" >> "$GITHUB_OUTPUT"
           echo "Sender: $SENDER_PK"
