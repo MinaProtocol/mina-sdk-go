@@ -383,7 +383,7 @@ func (c *Client) GetPooledUserCommands(publicKey string) ([]PooledUserCommand, e
 		return nil, err
 	}
 	var result struct {
-		PooledUserCommands []PooledUserCommand `json:"pooledUserCommands"`
+		PooledUserCommands []pooledUserCommandRaw `json:"pooledUserCommands"`
 	}
 	if err := json.Unmarshal(data, &result); err != nil {
 		return nil, err
@@ -391,7 +391,15 @@ func (c *Client) GetPooledUserCommands(publicKey string) ([]PooledUserCommand, e
 	if result.PooledUserCommands == nil {
 		return []PooledUserCommand{}, nil
 	}
-	return result.PooledUserCommands, nil
+	cmds := make([]PooledUserCommand, len(result.PooledUserCommands))
+	for i, raw := range result.PooledUserCommands {
+		cmds[i] = PooledUserCommand{
+			ID: raw.ID, Hash: raw.Hash, Kind: raw.Kind,
+			Nonce: raw.Nonce.String(), Amount: raw.Amount,
+			Fee: raw.Fee, From: raw.From, To: raw.To,
+		}
+	}
+	return cmds, nil
 }
 
 // -- Mutations --

@@ -1,5 +1,7 @@
 package mina
 
+import "encoding/json"
+
 // AccountBalance represents the balance of a Mina account.
 type AccountBalance struct {
 	Total  Currency
@@ -60,12 +62,25 @@ type SendDelegationResult struct {
 
 // PooledUserCommand represents a pending transaction in the mempool.
 type PooledUserCommand struct {
-	ID     string
-	Hash   string
-	Kind   string
-	Nonce  string
-	Amount string
-	Fee    string
-	From   string
-	To     string
+	ID     string `json:"id"`
+	Hash   string `json:"hash"`
+	Kind   string `json:"kind"`
+	Nonce  string `json:"nonce"`
+	Amount string `json:"amount"`
+	Fee    string `json:"fee"`
+	From   string `json:"from"`
+	To     string `json:"to"`
+}
+
+// pooledUserCommandRaw is used internally for JSON deserialization
+// since the daemon may return nonce as a number.
+type pooledUserCommandRaw struct {
+	ID     string      `json:"id"`
+	Hash   string      `json:"hash"`
+	Kind   string      `json:"kind"`
+	Nonce  json.Number `json:"nonce"`
+	Amount string      `json:"amount"`
+	Fee    string      `json:"fee"`
+	From   string      `json:"from"`
+	To     string      `json:"to"`
 }
