@@ -237,8 +237,8 @@ func (c *Client) GetAccount(publicKey, tokenID string) (*AccountData, error) {
 
 	var result struct {
 		Account *struct {
-			PublicKey string `json:"publicKey"`
-			Nonce     string `json:"nonce"`
+			PublicKey string      `json:"publicKey"`
+			Nonce     json.Number `json:"nonce"`
 			Delegate  string `json:"delegate"`
 			TokenID   string `json:"tokenId"`
 			Balance   struct {
@@ -256,7 +256,7 @@ func (c *Client) GetAccount(publicKey, tokenID string) (*AccountData, error) {
 	}
 
 	acc := result.Account
-	nonce, _ := strconv.Atoi(acc.Nonce)
+	nonce, _ := acc.Nonce.Int64()
 	total, err := CurrencyFromGraphQL(acc.Balance.Total)
 	if err != nil {
 		return nil, fmt.Errorf("parse total balance: %w", err)
@@ -280,7 +280,7 @@ func (c *Client) GetAccount(publicKey, tokenID string) (*AccountData, error) {
 
 	return &AccountData{
 		PublicKey: acc.PublicKey,
-		Nonce:     nonce,
+		Nonce:     int(nonce),
 		Balance:   balance,
 		Delegate:  acc.Delegate,
 		TokenID:   acc.TokenID,
@@ -430,20 +430,20 @@ func (c *Client) SendPayment(params SendPaymentParams) (*SendPaymentResult, erro
 	var result struct {
 		SendPayment struct {
 			Payment struct {
-				ID    string `json:"id"`
-				Hash  string `json:"hash"`
-				Nonce string `json:"nonce"`
+				ID    string      `json:"id"`
+				Hash  string      `json:"hash"`
+				Nonce json.Number `json:"nonce"`
 			} `json:"payment"`
 		} `json:"sendPayment"`
 	}
 	if err := json.Unmarshal(data, &result); err != nil {
 		return nil, err
 	}
-	nonce, _ := strconv.Atoi(result.SendPayment.Payment.Nonce)
+	nonce, _ := result.SendPayment.Payment.Nonce.Int64()
 	return &SendPaymentResult{
 		ID:    result.SendPayment.Payment.ID,
 		Hash:  result.SendPayment.Payment.Hash,
-		Nonce: nonce,
+		Nonce: int(nonce),
 	}, nil
 }
 
@@ -479,20 +479,20 @@ func (c *Client) SendDelegation(params SendDelegationParams) (*SendDelegationRes
 	var result struct {
 		SendDelegation struct {
 			Delegation struct {
-				ID    string `json:"id"`
-				Hash  string `json:"hash"`
-				Nonce string `json:"nonce"`
+				ID    string      `json:"id"`
+				Hash  string      `json:"hash"`
+				Nonce json.Number `json:"nonce"`
 			} `json:"delegation"`
 		} `json:"sendDelegation"`
 	}
 	if err := json.Unmarshal(data, &result); err != nil {
 		return nil, err
 	}
-	nonce, _ := strconv.Atoi(result.SendDelegation.Delegation.Nonce)
+	nonce, _ := result.SendDelegation.Delegation.Nonce.Int64()
 	return &SendDelegationResult{
 		ID:    result.SendDelegation.Delegation.ID,
 		Hash:  result.SendDelegation.Delegation.Hash,
-		Nonce: nonce,
+		Nonce: int(nonce),
 	}, nil
 }
 
