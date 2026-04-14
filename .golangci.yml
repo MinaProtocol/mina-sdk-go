@@ -1,0 +1,23 @@
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - bodyclose
+    - gocritic
+    - gofmt
+    - goimports
+    - misspell
+    - unconvert
+
+linters-settings:
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+
+issues:
+  exclude-use-default: false
