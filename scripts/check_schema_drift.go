@@ -58,8 +58,8 @@ func main() {
 		resp.Body.Close()
 
 		var result struct {
-			Data   json.RawMessage        `json:"data"`
-			Errors []map[string]any       `json:"errors"`
+			Data   json.RawMessage  `json:"data"`
+			Errors []map[string]any `json:"errors"`
 		}
 		if err := json.Unmarshal(body, &result); err != nil {
 			fmt.Printf("FAIL  %s: invalid JSON response\n", name)

@@ -109,7 +109,7 @@ func (c *Client) request(query string, variables map[string]any, queryName strin
 		}
 
 		body, err := io.ReadAll(resp.Body)
-		resp.Body.Close()
+		_ = resp.Body.Close()
 		if err != nil {
 			lastErr = err
 			if attempt < c.retries {
@@ -172,13 +172,13 @@ func (c *Client) GetDaemonStatus() (*DaemonStatus, error) {
 	}
 	var result struct {
 		DaemonStatus struct {
-			SyncStatus                string `json:"syncStatus"`
-			BlockchainLength          *int   `json:"blockchainLength"`
-			HighestBlockLengthReceived *int  `json:"highestBlockLengthReceived"`
-			UptimeSecs                *int   `json:"uptimeSecs"`
-			StateHash                 string `json:"stateHash"`
-			CommitID                  string `json:"commitId"`
-			Peers                     []struct {
+			SyncStatus                 string `json:"syncStatus"`
+			BlockchainLength           *int   `json:"blockchainLength"`
+			HighestBlockLengthReceived *int   `json:"highestBlockLengthReceived"`
+			UptimeSecs                 *int   `json:"uptimeSecs"`
+			StateHash                  string `json:"stateHash"`
+			CommitID                   string `json:"commitId"`
+			Peers                      []struct {
 				PeerID     string `json:"peerId"`
 				Host       string `json:"host"`
 				Libp2pPort int    `json:"libp2pPort"`
@@ -190,12 +190,12 @@ func (c *Client) GetDaemonStatus() (*DaemonStatus, error) {
 	}
 	ds := result.DaemonStatus
 	status := &DaemonStatus{
-		SyncStatus:                ds.SyncStatus,
-		BlockchainLength:          ds.BlockchainLength,
+		SyncStatus:                 ds.SyncStatus,
+		BlockchainLength:           ds.BlockchainLength,
 		HighestBlockLengthReceived: ds.HighestBlockLengthReceived,
-		UptimeSecs:                ds.UptimeSecs,
-		StateHash:                 ds.StateHash,
-		CommitID:                  ds.CommitID,
+		UptimeSecs:                 ds.UptimeSecs,
+		StateHash:                  ds.StateHash,
+		CommitID:                   ds.CommitID,
 	}
 	if ds.Peers != nil {
 		status.Peers = make([]PeerInfo, len(ds.Peers))
@@ -223,7 +223,7 @@ func (c *Client) GetNetworkID() (string, error) {
 
 // GetAccount returns account data for a public key.
 // Pass an empty tokenID to use the default MINA token.
-func (c *Client) GetAccount(publicKey string, tokenID string) (*AccountData, error) {
+func (c *Client) GetAccount(publicKey, tokenID string) (*AccountData, error) {
 	vars := map[string]any{"publicKey": publicKey}
 	if tokenID != "" {
 		vars["token"] = tokenID
@@ -279,10 +279,10 @@ func (c *Client) GetAccount(publicKey string, tokenID string) (*AccountData, err
 
 	return &AccountData{
 		PublicKey: acc.PublicKey,
-		Nonce:    nonce,
-		Balance:  balance,
-		Delegate: acc.Delegate,
-		TokenID:  acc.TokenID,
+		Nonce:     nonce,
+		Balance:   balance,
+		Delegate:  acc.Delegate,
+		TokenID:   acc.TokenID,
 	}, nil
 }
 
@@ -301,9 +301,9 @@ func (c *Client) GetBestChain(maxLength int) ([]BlockInfo, error) {
 
 	var result struct {
 		BestChain []struct {
-			StateHash                string `json:"stateHash"`
-			CommandTransactionCount  int    `json:"commandTransactionCount"`
-			CreatorAccount           struct {
+			StateHash               string `json:"stateHash"`
+			CommandTransactionCount int    `json:"commandTransactionCount"`
+			CreatorAccount          struct {
 				PublicKey any `json:"publicKey"`
 			} `json:"creatorAccount"`
 			ProtocolState struct {
@@ -329,8 +329,7 @@ func (c *Client) GetBestChain(maxLength int) ([]BlockInfo, error) {
 		slotFork, _ := strconv.Atoi(b.ProtocolState.ConsensusState.Slot)
 
 		creatorPK := "unknown"
-		switch v := b.CreatorAccount.PublicKey.(type) {
-		case string:
+		if v, ok := b.CreatorAccount.PublicKey.(string); ok {
 			creatorPK = v
 		}
 

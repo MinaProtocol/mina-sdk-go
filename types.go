@@ -25,23 +25,23 @@ type PeerInfo struct {
 
 // DaemonStatus represents the status of the Mina daemon.
 type DaemonStatus struct {
-	SyncStatus                string
-	BlockchainLength          *int
+	SyncStatus                 string
+	BlockchainLength           *int
 	HighestBlockLengthReceived *int
-	UptimeSecs                *int
-	Peers                     []PeerInfo
-	CommitID                  string
-	StateHash                 string
+	UptimeSecs                 *int
+	Peers                      []PeerInfo
+	CommitID                   string
+	StateHash                  string
 }
 
 // BlockInfo represents a block in the best chain.
 type BlockInfo struct {
-	StateHash                string
-	Height                   int
-	GlobalSlotSinceHardFork  int
-	GlobalSlotSinceGenesis   int
-	CreatorPK                string
-	CommandTransactionCount  int
+	StateHash               string
+	Height                  int
+	GlobalSlotSinceHardFork int
+	GlobalSlotSinceGenesis  int
+	CreatorPK               string
+	CommandTransactionCount int
 }
 
 // SendPaymentResult is the result of a send_payment mutation.

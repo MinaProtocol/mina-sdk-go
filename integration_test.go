@@ -21,9 +21,9 @@ import (
 //	MINA_TEST_RECEIVER_KEY=B62q... \
 //	go test -v -run Integration
 
-func graphqlURI() string     { return os.Getenv("MINA_GRAPHQL_URI") }
-func senderKey() string      { return os.Getenv("MINA_TEST_SENDER_KEY") }
-func receiverKey() string    { return os.Getenv("MINA_TEST_RECEIVER_KEY") }
+func graphqlURI() string  { return os.Getenv("MINA_GRAPHQL_URI") }
+func senderKey() string   { return os.Getenv("MINA_TEST_SENDER_KEY") }
+func receiverKey() string { return os.Getenv("MINA_TEST_RECEIVER_KEY") }
 
 func skipNoDaemon(t *testing.T) {
 	t.Helper()

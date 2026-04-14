@@ -9,14 +9,14 @@ import (
 )
 
 func gqlHandler(data any) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(map[string]any{"data": data})
+	return func(w http.ResponseWriter, _ *http.Request) {
+		_ = json.NewEncoder(w).Encode(map[string]any{"data": data})
 	}
 }
 
 func gqlErrorHandler(errors []map[string]any) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(map[string]any{"errors": errors})
+	return func(w http.ResponseWriter, _ *http.Request) {
+		_ = json.NewEncoder(w).Encode(map[string]any{"errors": errors})
 	}
 }
 
@@ -61,12 +61,12 @@ func TestGetSyncStatusBootstrap(t *testing.T) {
 func TestGetDaemonStatus(t *testing.T) {
 	client, srv := newTestClient(gqlHandler(map[string]any{
 		"daemonStatus": map[string]any{
-			"syncStatus":                "SYNCED",
-			"blockchainLength":          100,
+			"syncStatus":                 "SYNCED",
+			"blockchainLength":           100,
 			"highestBlockLengthReceived": 100,
-			"uptimeSecs":                3600,
-			"stateHash":                 "3NKtest...",
-			"commitId":                  "abc123",
+			"uptimeSecs":                 3600,
+			"stateHash":                  "3NKtest...",
+			"commitId":                   "abc123",
 			"peers": []map[string]any{
 				{"peerId": "peer1", "host": "1.2.3.4", "libp2pPort": 8302},
 			},
@@ -176,9 +176,9 @@ func TestGetBestChain(t *testing.T) {
 	client, srv := newTestClient(gqlHandler(map[string]any{
 		"bestChain": []map[string]any{
 			{
-				"stateHash":                "3NKhash1",
-				"commandTransactionCount":  3,
-				"creatorAccount":           map[string]any{"publicKey": "B62qcreator..."},
+				"stateHash":               "3NKhash1",
+				"commandTransactionCount": 3,
+				"creatorAccount":          map[string]any{"publicKey": "B62qcreator..."},
 				"protocolState": map[string]any{
 					"consensusState": map[string]any{
 						"blockHeight":      "50",
