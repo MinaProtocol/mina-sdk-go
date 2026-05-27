@@ -49,7 +49,7 @@ query ($publicKey: PublicKey!) {
 `
 
 const queryGetAccountWithToken = `
-query ($publicKey: PublicKey!, $token: UInt64!) {
+query ($publicKey: PublicKey!, $token: TokenId!) {
     account(publicKey: $publicKey, token: $token) {
         publicKey
         nonce
