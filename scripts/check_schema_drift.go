@@ -358,11 +358,11 @@ func sortedSetDiff(a, b map[string]bool) []string {
 // Layer 2: live query check
 // ─────────────────────────────────────────────────────────────────────────────
 
-// opSingleRe matches a stand-alone `const NAME = `...` declaration.
+// opSingleRe matches a stand-alone "const NAME = `...`" declaration.
 var opSingleRe = regexp.MustCompile("(?s)(?m)^const\\s+(\\w+)\\s*=\\s*`(.*?)`")
 
-// opGroupRe captures the body of every `const ( ... )` block; we then scan
-// each block for `NAME = `...`` lines (which lack the `const` keyword).
+// opGroupRe captures the body of every "const ( ... )" block; we then scan
+// each block for "NAME = `...`" lines (which lack the const keyword).
 var opGroupRe = regexp.MustCompile(`(?s)const\s*\(\s*(.*?)\s*\)`)
 var opGroupedLineRe = regexp.MustCompile("(?s)(?m)^[ \\t]*(\\w+)\\s*=\\s*`(.*?)`")
 
